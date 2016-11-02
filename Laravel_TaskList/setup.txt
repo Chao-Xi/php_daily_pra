@@ -1,0 +1,41 @@
+1--Database and model
+1.composer create-project laravel/laravel your-project-name 5.2.*
+（¨cannot install laravel 5.3 since php version is old）
+2.Delete database/mirgration/files
+  cd tasklist
+  (create migration)php artisan make:migration create_tasks_table --create-tasks
+3.alter migration
+4.change .env file to connect to the database
+  DB_DATABASE=lara_task
+  DB_USERNAME=root
+  DB_PASSWORD=901014  
+5.php artisan migrate(create database)
+6.create model
+  php artisan make:model Task =>(app/Task.php)
+
+
+2.-- Routes and view
+1.app/HTTP/routes<=>resources/views/.blade.php
+2.create resources/views/layouts(folders) 
+3.layouts/app.blade.php 
+4.tasks/index.blade.php
+
+3--validation
+index.blade.php csrf_token()
+                csrf_field()
+views/common/errors.blade.php      
+
+4--adding tasks 
+  Method1: $task=new Task;
+           $task->name=$request->name;
+           $task->save();
+           return redirect('/');
+  Method2: routes: Task::create(['name'=>$request->name]);
+                   return redirect('/'); 
+           Model:Task.php   protected $fillable=['name', ];  
+
+5--Display Tasks
+           $tasks=Task::orderBy('created_at','asc')->get();
+	       1.return view('tasks.index')->with($tasks);
+           2.return view('tasks.index',['tasks'=>$tasks,]);
+6--Delete              
