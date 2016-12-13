@@ -1,0 +1,4 @@
+.pagination a.selected{
+	font-weight:bold;
+	color: red;
+}
