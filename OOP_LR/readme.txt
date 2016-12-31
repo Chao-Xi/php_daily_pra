@@ -14,4 +14,16 @@
        }
        return self::$_instance;  	
     } 
- 4.db.php   
+ 4.db.php
+   if(!$this->query($sql, $fields)->error())
+    {
+     return true;
+    }  
+   //directly run the code
+   
+   (10)Insert database function
+       Update database function
+
+  (11) Validation.php 
+       register.php     
+

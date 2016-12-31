@@ -5,11 +5,6 @@
    // $GLOBALS['config']['mysql']['host'];
 
    //static function Classname::functionname(parameter)
-   $user=DB::getInstance()->get('users',array('username','=','kristen'));
-  //$user=DB::getInstance()->query("select * from users");
-  if(!$user->count())
-  {
-  	echo 'No user';
-  }else{
-   echo $user->first()->username;
-  }	
+   //$user=DB::getInstance()->get('users',array('username','=','kristen'));
+   //$user=DB::getInstance()->query("select * from users");
+  $userUpdate=DB::getInstance()->update('users','3',['name'=>'Keria Knightly']);
