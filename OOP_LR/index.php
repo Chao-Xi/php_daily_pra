@@ -7,4 +7,28 @@
    //static function Classname::functionname(parameter)
    //$user=DB::getInstance()->get('users',array('username','=','kristen'));
    //$user=DB::getInstance()->query("select * from users");
-  $userUpdate=DB::getInstance()->update('users','3',['name'=>'Keria Knightly']);
+   //$userUpdate=DB::getInstance()->update('users','3',['name'=>'Keria Knightly']);
+    if(Session::exists('home'))
+    {
+     echo "<p>".Session::flash('home')."</p>";
+    }	
+
+    //echo Session::get(Config::get('session/session_name'));
+    $user=new User();
+    //echo $user->data()->username;
+    
+    if($user->isLoggedIn())
+    {
+ ?>   
+     <p>Hello <a href="#"><?php echo escape($user->data()->username); ?></a></p>
+
+     <ul>
+       <li><a href="logout.php">Log out</li>
+       <li><a href="update.php">Update info</li>
+     </ul>
+ <?php     
+     }else
+     {
+      echo '<p>You need to <a href="login.php">login</a> or <a href="register.php">register</a></p>';
+     }
+?>       

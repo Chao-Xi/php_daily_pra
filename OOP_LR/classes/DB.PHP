@@ -83,7 +83,7 @@
     
     public function delete($table, $where)
     {
-     return $this->action('delete', $table, $value);
+     return $this->action('delete', $table, $where);
     }
     
     public function results()

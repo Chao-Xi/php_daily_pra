@@ -21,9 +21,22 @@
     }  
    //directly run the code
    
-   (10)Insert database function
-       Update database function
-
-  (11) Validation.php 
-       register.php     
-
+1.Database
+2.Directory Structure and files
+3.Intialization
+4.functions
+5.Config Class
+6.Connect Database
+7.Database Querying
+8.Database Results
+9.Database Insert/Update
+10.Form Validation
+11.CSRF protection
+12.Flashing
+13.Registering User
+14.Redirecting
+15.log in 
+16.Checking Signed In
+17.Logging Out
+18.Remember me
+19.Update Information  
