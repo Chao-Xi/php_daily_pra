@@ -26,10 +26,10 @@
               }else{
                 //Process logout
               } 
-           } 
-           else{
-             $this->find($user);
            }
+           }
+         else{
+             $this->find($user);   
       }
     }
 
@@ -47,7 +47,7 @@
     {
        if($user)
        {
-        $field=(is_numeric(($user)) ? 'id':'username');
+        $field=(is_numeric($user)) ? 'id' : 'username';
         $data=$this->_db->get('users',array($field, "=", $user));
 
         if($data->count())
@@ -137,5 +137,19 @@
       throw new Exception('There was a problem updating');
      } 
    }
+    
+   public function hasPermission($key)
+   {
+    $group=$this->_db->get('groups', array('id', '=', $this->data()->group));
+    if($group->count())
+    {
+      $permissions=json_decode($group->first()->permissions, true);
 
+      if($permissions[$key]==true)
+      {
+        return true;
+      } 
+    }
+      return false;   
+   } 
   }

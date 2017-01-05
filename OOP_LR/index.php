@@ -20,14 +20,19 @@
     if($user->isLoggedIn())
     {
  ?>   
-     <p>Hello <a href="#"><?php echo escape($user->data()->username); ?></a></p>
+     <p>Hello <a href="profile.php?user=<?php echo escape($user->data()->username);?>"><?php echo escape($user->data()->username); ?></a></p>
 
      <ul>
        <li><a href="logout.php">Log out</li>
        <li><a href="update.php">Update info</li>
+       <li><a href="changepassword.php">Change Password</a></li>
      </ul>
- <?php     
-     }else
+ <?php
+     if($user->hasPermission('admin'))
+     {
+      echo "<p>You are an administrator!</p>";
+     }
+    }else
      {
       echo '<p>You need to <a href="login.php">login</a> or <a href="register.php">register</a></p>';
      }

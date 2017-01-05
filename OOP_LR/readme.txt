@@ -39,4 +39,7 @@
 16.Checking Signed In
 17.Logging Out
 18.Remember me
-19.Update Information  
+19.Update Information 
+20.Changing Password 
+21.Permissions
+22.User Profile
