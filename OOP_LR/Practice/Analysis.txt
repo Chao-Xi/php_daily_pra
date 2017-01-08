@@ -1,0 +1,512 @@
+1.$GLOBALS['config']=array();
+  'remember'=>array('cookie_name'=>hash','cookie_expiry'=>604800)
+   //604800 stands for a month
+
+2.Access classes
+  spl_autoload_register(function($class))
+ {
+  require_once 'classes/'.$class.'.php';
+ }); 
+  require all classes
+
+ 3.Sanitize
+  function escape($string)
+  {
+   return htmlentities($string,ENT_QUOTES,'UTF-8');
+  } 
+
+ 4.Data Layer Setup
+  class DB{
+  	private static $_instance=null;
+    //The underline for the private variables
+
+   
+   //DB instance
+   //Just connect the database once, dont have to connect multiple times
+    public static function getInstance()
+    {
+       if(!isset(self::$_instance))
+       {
+       	 self::$_instance=new DB();
+       }
+       return self::$_instance;  	
+    } 
+    //All fucntion can be called by this class and this object
+
+   //Database Querying
+    DB::getInstance()->query("select username from users where username=? or username=?", array('alex','billy'));   
+   
+
+   //PDO::bindValue(POS, $param);
+    $x=1;
+  if(count($params))
+  {
+   foreach($params as $param)
+   {
+     $this->_query->bindValue($x, $param);
+      $x++;
+    }	  
+  
+   return $this;=>Chain The method
+
+     public function error()
+    {
+      return $this->_error;	
+    }
+
+   [$user=DB::getInstance();
+    $user->error();]=>Chain the method
+
+
+    //function action
+    //where=>'username', '=', 'alex'=>Three prameters
+     field','operators,'value'
+     if(in_array($operator, $operators))
+     {
+       $sql="{$action} from {$table} where {$field} {$operator} ?";
+      if(!$this->query($sql, array($value))->error())
+       {
+         return $this;	
+        }		
+     }		   
+    
+
+    //actions function like get delete insert update
+     public function get($table, $where)
+    {
+      return $this->action('select *', $table, $where);	 
+    }
+    
+    public function delete($table, $where)
+    {
+     return $this->action('delete', $table, $where);
+    } 
+
+  //Results
+    public function results()
+    {
+     return $this->_results;	
+    }
+     
+    public function first()
+    {
+      return $this->_results[0];	
+    }
+
+   //Insert
+   $userInsert=DB::getInstance()->insert('users',array(
+     'username'=>'Dale',
+     'password'=>'password',
+     'salt'=>'salt'
+     ));  
+    //table fields
+    if($userInsert)
+    {
+     //success
+    }
+
+   //Form Valiation
+   1.Form.php
+   2.Input.php
+   	public static function exists($type="post")
+  	{
+  	   switch($type)
+  	   {
+  	   	case 'post':
+  	   	return (!empty($_POST))?true:false;
+  	   	break;
+
+  	   	case 'get':
+  	   	return (!empty($_POST)) ? true:false;
+  	   	break;
+
+  	   	default:
+  	   	return false;
+  	   	break;
+  	   }	
+  	}
+ 
+
+ //CSRF 
+ Token.php
+ Session.php
+  public static function generate()
+  {
+    return Session::put(config::get('session/token_name'),md5(uniqid()));
+  }
+  //uniqid()=>generate an  unqiue id    
+  if(Token::check(Input::get('token')))
+  {   	
+
+  }
+   <input type="hidden" name="token" value="<?php echo Token::generate();?>" > 
+
+
+//13.Flashing
+Session.php
+	public static function flash($name, $string='')
+    	{
+           if(self::exists($name))
+           {
+             $session=self::get($name);
+             self::delete($name);
+             return $session;  
+           }else{
+           	self::put($name, $string);
+           }	
+
+    	}  
+
+14.Registering User 
+User.php
+public function create($fields=array())
+    {  
+      if(!$this->_db->insert('users', $fields))
+      {   
+       throw new Exception('There was a problem creating an account');
+      }	
+
+
+Register.php
+  
+   try{
+        	$user->create(array(
+                          'username'=>Input::get('username'),
+                          'password'=>Hash::make(Input::get('password'), $salt),
+                          'salt'=>$salt,
+                          'name'=>Input::get('name'),
+                          'joined'=>date('Y-m-d H:i:s'),
+                          'group'=>'1'  
+        		           ));
+        	Session::flash('home','You have been registered and can now log in');
+        	Redirect::to(404);
+        }catch(Exception $e)
+        {
+        	die($e->getMessage());
+        }
+ 
+ //Hash Salt encrypt
+//Hash.php
+
+  <?php 
+     class Hash{
+     	public static function make($string, $salt='')
+     	{
+     	  return hash('sha256', $string.$salt);	
+     	} 
+
+     	public static function salt($length)
+     	{
+     		return utf8_encode(mcrypt_create_iv($length));
+     	}
+
+     	public static function unique()
+     	{
+     		return self::make(uniqid());
+     	}
+     	//call itself, and make self unique
+     }
+
+   $salt=Hash::salt(32);
+   Hash::make(Input::get('password'), $salt),  
+
+
+Register.php
+$user->create(array(
+               'username'=>Input::get('username'),
+               'password'=>Hash::make(Input::get('password'), $salt),
+               'salt'=>$salt,
+               'name'=>Input::get('name'),
+               'joined'=>date('Y-m-d H:i:s'),
+               'group'=>'1'  
+        		           ));
+
+
+
+//Redirect.php
+
+<?php 
+   class Redirect{
+   	public static function to($location=null)
+   	{
+   	 if($location)
+   	 {
+   	 	if(is_numeric($location))
+   	 	{
+   	 	  switch($location)
+   	 	  {
+   	 	  	case 404:
+   	 	  	    header('HTTP/1.0 404 Not Found');
+   	 	  	    include 'includes/errors/404.php';
+   	 	  	    exit();
+   	 	  	break;    
+   	 	  }
+   	 	}
+   	 	header('Location: '.$location);
+   	 	exit();
+   	 }	
+   	}
+   }
+
+
+ Login.php
+ 
+ if(input::exists())
+  {
+  	if(Token::check(Input::get('token')))
+  	{
+        $validate=new Validate();
+  	    $validation=$validate->check($_POST,array(
+          'username'=>array('required'=>true),
+          'password'=>array('required'=>true)      
+  	  	));	
+  	}
+
+  }	
+
+  <input type="hidden" name="token" value="<?php echo Token::generate();?>">
+  <input type="submit" value="login">  
+
+
+
+User.php
+
+   public function find($user=null)
+    {
+       if($user)
+       {
+        $field=(is_numeric($user)) ? 'id' : 'username';
+        $data=$this->_db->get('users',array($field, "=", $user));
+
+        if($data->count())
+         {
+          $this->_data=$data->first();
+          return true;
+         } 
+       } 
+         return false;
+    }
+
+     public function login($username=null, $password=null, $remember=false)
+    { 
+      if(!$username && !$password && $this->exists())
+      {
+        Session::put($this->_sessionName, $this->data()->id);
+      }  
+     else
+     {
+      $user=$this->find($username);
+      if($user)
+       {
+        if($this->data()->password===Hash::make($password, $this->data()->salt))
+         {
+          Session::put($this->_sessionName,$this->data()->id);
+
+          if($remember)
+          {
+            $hash=Hash::unique();
+            $hashCheck=$this->_db->get('users_session',array('user_id','=',$this->data()->id));
+            // var_dump($this->data()->id);
+            // die();
+
+            if(!$hashCheck->count())
+            {
+              $this->_db->insert('users_session',array(
+                 'user_id'=>$this->data()->id,
+                 'hash'=>$hash
+                ));
+             // echo $this->_db; 
+             // die() 
+            }
+            else
+            {
+              $hash=$hashCheck->first()->hash;
+            } 
+            cookie::put($this->_cookieName, $hash, Config::get('remember/cookie_expiry'));
+          }
+
+          return true;
+         } 
+       }
+      } 
+        return false;
+    }
+    
+ //Logout.php
+ 
+ public function logout()
+  { 
+    $this->_db->delete('users_session', array('user_id','=',$this->data()->id));
+    
+    Session::delete($this->_sessionName);
+    //Basic logout  function
+
+    Cookie::delete($this->_cookieName);
+  }    
+
+
+ //Remember
+ login.php
+
+  	$remember=(Input::get('remember')==="on")? true: false; 
+
+
+//User.php  	
+   if($remember)
+          {
+            $hash=Hash::unique();
+            $hashCheck=$this->_db->get('users_session',array('user_id','=',$this->data()->id));
+            // var_dump($this->data()->id);
+            // die();
+
+            if(!$hashCheck->count())
+            {
+              $this->_db->insert('users_session',array(
+                 'user_id'=>$this->data()->id,
+                 'hash'=>$hash
+                ));
+             // echo $this->_db; 
+             // die() 
+            }
+            else
+            {
+              $hash=$hashCheck->first()->hash;
+            } 
+            cookie::put($this->_cookieName, $hash, Config::get('remember/cookie_expiry'));
+          }
+
+
+  //Update
+   
+
+   //Update.php
+   $user=new User();
+
+     if(!$user->isLoggedIn())
+     {
+     	Redirect::to('index.php');
+     }	
+      
+      require_once 'core/init.php';
+     
+     $user=new User();
+
+     if(!$user->isLoggedIn())
+     {
+     	Redirect::to('index.php');
+     }	
+     
+     if(Input::exists())
+     {
+     	if(Token::check(Input::get('token')))
+     	{
+     		$validate=new Validate();
+     		$validation=$validate->check($_POST,array(
+                'name'=>array(
+                         'required'=>true,
+                         'min'=>2,
+                         'max'=>50    
+                	      )
+     			));
+          if($validation->passed())
+          {
+          	try{
+          		$user->update(array('name'=>Input::get('name')));
+
+          		Session::flash('home', 'Your details haven been updated');
+          		Redirect::to('index.php');
+          	}catch(Exception $e)
+          	{
+          	  die($e->getMessage());
+          	}
+          }else{
+          	foreach($validation->errors() as $error)
+          	{
+          		echo $error, "<br/>";
+          	}	
+          }	
+
+     	}	
+     }	
+
+
+   //User.php         
+
+   public function update($fields=array(), $id=null)
+   {
+     if(!$id && $this->isLoggedIn())
+     {
+       $id=$this->data()->id;
+     } 
+     
+     if(!$this->_db->update('users', $id, $fields))
+     {
+      throw new Exception('There was a problem updating');
+     } 
+   }
+
+   //Changing password
+  ChangePassword.php
+   if($validation->passed())
+      {
+        if(Hash::make(Input::get('password_current'), $user->data()->salt)!==$user->data()->password)
+        {
+        	echo 'Your current password is wrong';
+        }else
+        {
+        	$salt=Hash::salt(32);
+        	$user->update(array(
+                  'password'=>Hash::make(Input::get('password_new'), $salt),
+                  'salt'=>$salt
+        		));
+
+        	Session::flash('home', 'Your password has been changed');
+        	Redirect::to('index.php');
+        }	
+
+   //Permissions
+   User.php
+
+   public function hasPermission($key)
+   {
+    $group=$this->_db->get('groups', array('id', '=', $this->data()->group));
+    if($group->count())
+    {
+      $permissions=json_decode($group->first()->permissions, true);
+
+      if($permissions[$key]==true)
+      {
+        return true;
+      } 
+    }
+      return false;   
+   }     
+ 
+
+ //User Profile
+ profile.php
+
+
+ <?php
+   require_once 'core/init.php';
+
+   if(!$username=Input::get('user'))
+   {
+
+   	Redirect::to('index.php');
+   }else
+   {
+   	// var_dump($username);
+   	// die();
+   	$user=new User($username);
+   	// var_dump($user);
+    // die();
+
+   	if(!$user->exists())
+    {
+    	Redirect::to(404);
+    }else
+    {
+     $data=$user->data();
+    }		
+  

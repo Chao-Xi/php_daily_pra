@@ -1,11 +1,12 @@
 <?php
-  class DB{
+    class DB{
   	private static $_instance=null;
   	private $_pdo,
   	        $_query,
   	        $_error=false,
   	        $_results,
   	        $_count=0;
+
 
     private function __construct()
     {
@@ -16,21 +17,13 @@
      {
      	die($e->getMessage());
      }	
-    }
-     //Just connect the database once, dont have to connect multiple times
-    public static function getInstance()
-    {
-       if(!isset(self::$_instance))
-       {
-       	 self::$_instance=new DB();
-       }
-       return self::$_instance;  	
-    } 
-   
-
+    }        
+    
+  // DB::getInstance()->query("select username from users where username=? or username=?", array('alex','billy'));   
+  //sql parameter
    public function query($sql, $params=array())
    {
-     $this->_error=false;
+      $this->_error=false;
      if($this->_query=$this->_pdo->prepare($sql))
      {
      	$x=1;
@@ -42,8 +35,8 @@
           	$x++;
           }	
         }
-        
-        if($this->_query->execute())
+    //PDO=>BindValue();
+         if($this->_query->execute())
         {
         	$this->_results=$this->_query->fetchAll(PDO::FETCH_OBJ);
         	$this->_count=$this->_query->rowCount();
@@ -52,10 +45,10 @@
         	$this->_error=true;
         } 		
      }	
-      return $this;  
-    }
-    
-    public function action($action, $table, $where=array())
+      return $this;  //Chain the method
+   } 	
+
+     public function action($action, $table, $where=array())
     {  //where=>'username', '=', 'alex'=>Three prameters
        //        'field','operators,'value  
       if(count($where)===3)
@@ -74,10 +67,9 @@
             }		
         }		
       }
-      return false;	
-    }
 
-    public function get($table, $where)
+     
+      public function get($table, $where)
     {
       return $this->action('select *', $table, $where);	 
     }
@@ -85,9 +77,23 @@
     public function delete($table, $where)
     {
      return $this->action('delete', $table, $where);
-    }
+    }  
     
-    public function results()
+    //Get the results
+    $user=DB::getInstance()->query('select * from users');
+    if(!$user->$count())
+    {
+    	echo "No user";
+    }else
+    {
+    	foreach($user->results() as $user)
+    	{
+    	echo $user->username,"<br/>";
+    	echo $user->first()->username;	
+    	}	
+    } 
+
+      public function results()
     {
      return $this->_results;	
     }
@@ -96,7 +102,22 @@
     {
       return $this->_results[0];	
     }
-    
+
+    //First result:$user->first()->username
+
+   //Insert
+   $userInsert=DB::getInstance()->insert('users',array(
+     'username'=>'Dale',
+     'password'=>'password',
+     'salt'=>'salt'
+     ));  
+    //table fields
+    if($userInsert)
+    {
+     //success
+    }
+
+
     public function insert($table, $fields=array())
     {
       if(count($fields))
@@ -125,40 +146,14 @@
         }
          return false;	
     }
-    
-    public function update($table, $id, $fields)
+	
+
+	   //Insert
+   $userInsert=DB::getInstance()->update('users','3',array(
+     'password'=>'newpassword',
+     ));  
+    //table fields
+    if($userInsert)
     {
-        $set='';
-        $x=1;
-
-        foreach($fields as $name=>$value)
-        {
-           $set.="{$name}= ? ";
-           if($x<count($fields))
-           {
-           	$set.=', ';
-           }
-           $x++;	
-        } 
-
-        $sql="UPDATE {$table} SET {$set} where id={$id}";
-
-        if(!$this->query($sql, $fields)->error())
-        {
-          return true;	
-        }
-
-        return false;	
+     //success
     }
-
-    public function error()
-    {
-      return $this->_error;	
-    }
-
-    public function count()
-    {
-      return $this->_count;
-    }
-
-  }
