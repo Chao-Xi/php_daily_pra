@@ -1,0 +1,1 @@
+Single Responsiblity=>one class only has one type of functions[responsiblity]
