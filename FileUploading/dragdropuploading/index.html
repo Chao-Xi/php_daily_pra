@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Drag & Drop Uploading</title>
+	<link rel="stylesheet" type="text/css" href="css/global.css">
+</head>
+ <body>
+      <div id="uploads"></div>
+      <div class="dropzone" id="dropzone">Drop files here to upload</div>
+
+      <script type="text/javascript">
+      window.onload=function(){
+      		
+      	   var dropzone=document.getElementById('dropzone');
+              
+            dropzone.ondragenter=function (e)
+    	   {
+    	  	e.preventDefault();
+    	   }
+
+      		dropzone.ondragover=function(e)
+      		{ 
+      		  
+      		  this.className='dropzone dragover';
+      	      return false;
+      		}
+
+      		dropzone.ondragleave=function(e)
+      		{
+      		  e.preventDefault();	
+      		  this.className='dropzone';
+      		  return false;
+      		}
+
+      		  dropzone.ondrop=function(e)
+            {
+              e.preventDefault();
+              this.className='dropzone';
+              upload(e.dataTransfer.files);
+            }
+
+            var upload=function(files)
+            {
+            	var formData=new FormData();
+            	var xhr=new XMLHttpRequest();
+
+            	for(var x=0; x<files.length; x++)
+            	{
+            		formData.append('file[]', files[x]);
+            	}
+
+            	xhr.onload=function()
+            	{
+            		var data=JSON.parse(this.responseText);//json=>object
+            		displayUploads(data);
+            	}
+
+            	xhr.open('post', 'upload.php');
+            	xhr.send(formData);
+            }
+            
+            var displayUploads=function(data)
+            {
+            	var uploads=document.getElementById('uploads');
+            	var anchor, x;
+
+            	for(x=0; x<data.length; x++)
+            	{
+            		anchor=document.createElement('a');
+            		anchor.href=data[x].file;
+            		anchor.innerText=data[x].name+"  ";
+
+            		uploads.appendChild(anchor);
+            	}	
+            }
+
+      	};
+      </script>
+ </body>
+</html>
