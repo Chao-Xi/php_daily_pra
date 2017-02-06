@@ -1,0 +1,25 @@
+1.API: Application Programming Interface
+2.REST: REpresentational State Transfer
+3.Procedure:Client->Server(HTTP)
+4.http://graph.facebook.com/youtube
+5.Server=AMPS.GOOGLEAPIS.COM
+  RESOURCE: /AMPS /API /GEOCODE /JSON
+  http://maps.googleapis.com/maps/api/geocode?json?address=chicago&sensor=false
+
+6.instagram=>api console
+   https://apigee.com/console/instagram?apig_cc=1  
+    
+   media/search:https://api.instagram.com/v1/media/search
+   
+ 7.get=>put the data in the url
+   post=>put the data in the body of request
+ 8.myproject=>google api key；AIzaSyBbJJqYYJk1gI1tw7f3wsJXfnepG-NsDm8 
+ 
+
+ 9.instagram
+   create client
+   url:https://elfsight.com/service/generate-instagram-access-token/﻿
+   Client ID 664ed1e3c753434ebfda22647486d08d
+   Client Secret eac41d03dfba4889b8c63aec930ab183
+   register token:https://elfsight.com/service/generate-instagram-access-token/
+   token:1635672874.664ed1e.716c2cddfd3d4468b67d6ceb977089d8     
