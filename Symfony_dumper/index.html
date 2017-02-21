@@ -1,0 +1,26 @@
+<?php
+    require "vendor/autoload.php";
+    $app=new \Slim\App(['settings'=>['displayErrorDetails'=>true]]);
+    
+    $container=$app->getContainer();
+
+    $container['view'] = function ($container) {
+    $view = new \Slim\Views\Twig(__DIR__.'/templates', [
+        'cache' => false,
+        'debug' => true
+    ]);
+    
+    // Instantiate and add Slim specific extension
+    $basePath = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
+    $view->addExtension(new Slim\Views\TwigExtension($container['router'], $basePath));
+    $view->addExtension(new \Twig_Extension_Debug);
+
+    return $view;
+   };
+
+   $app->get('/', function($request, $response){
+   	return $this->view->render($response, 'home.twig',
+   		['response'=>$response ]);
+   });
+
+    $app->run();
