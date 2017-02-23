@@ -1,0 +1,43 @@
+1.create database
+  lara_task
+
+2.install laravel
+  composer create-project laravel/laravel tasklist 5.2.*
+  (cannot install laravel 5.3 since php version is old)
+
+3.Delete orginal database migration(user and password reset) in database/migration
+  cd tasklist
+
+4.create our own migration[you can roll back the migration]
+  php artisan make:migration create_tasks_table --create-tasks
+  
+  1)increment(primary key)
+  2)timestamps(created_at updated_at)
+  3)public function up()
+    {
+      Schema::create('tasks', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+    }
+  4)public function down()
+  {
+    Schema::drop('tasks');
+  }
+
+5. .env=>database parameter
+
+6. create model 
+   php artisan make:model Task
+
+   namespace App;
+   use Illuminate\Database\Eloquent\Model;
+   class Task extends Model
+   {
+   
+   }
+
+
+
+

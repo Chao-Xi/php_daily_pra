@@ -1,0 +1,41 @@
+1.Http/Routes.php
+  Route::get('/', function(){
+   //
+  }) 
+
+  Route::post('/task', function(){
+  // 
+  })
+
+  Route::delete('/task/{task}', function(){
+  //
+  })
+
+2.resources/views/layouts/app.blade.php
+  <div class="container">
+  @yield('content')
+  </div>  
+
+  resources/views/tasks/index.blade.php
+  @extends('layouts.app')
+
+  @section('content')
+    content
+  @endsection
+
+  Route::get('/', function(){
+    return view('tasks.index')
+  }) 
+
+3. resources/views/tasks/index.blade.php   
+   @section('content')
+    <form action="{{url('task')}}" method="post">=>refer to the routes post
+   @endsection
+
+   
+
+
+
+
+
+

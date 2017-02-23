@@ -1,0 +1,20 @@
+1.routes.php
+  Route::get('/', function () {
+	$tasks=Task::orderBy('created_at','asc')->get();//get() a collecton of data
+    
+    return view('tasks.index',['tasks'=>$tasks,
+    	                      ]); 
+                          });
+
+
+   Or return view('tasks.index')->with($tasks);
+
+
+5.index.blade.php
+  
+  @if($tasks->count())
+  @foreach($tasks as $task)	
+  <tr>
+  <td>{{$task->name}}</td>
+  </tr>
+  @endforeach                          

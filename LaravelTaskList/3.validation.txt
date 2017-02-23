@@ -1,0 +1,40 @@
+1.Cross site request fogery
+
+2. resources/views/tasks/index.blade.php 
+   @section('content')
+   {{  csrf_field() }}
+   @endsection
+
+3.routes.php
+  
+  use Illuminate\Http\Request;
+  
+  Route::post('/task', function (Request $request) {
+    $validator=Validator::make($request->all(),[
+          'name'=>'required|max:255',
+    	]);
+    if($validator->fails())
+    {
+    	return redirect('/')->withInput()
+    	                   ->withErrors($validator);  
+    } 
+    
+}); 
+
+4.common/errors.blade.php
+   @if(count($errors)>0)
+   <div class="alert alert-danger">
+   <ul>
+  	@foreach($errors->all() as $error)
+    <li>{{ $error }}</li>
+    @endforeach
+   </ul>
+   </div> 
+  @endif
+
+5.index.blade.php 
+
+ @include('common.errors')
+
+
+

@@ -1,0 +1,20 @@
+1.routes.php
+ Route::post('/task', function (Request $request) {
+  
+   $task=new Task;
+   $task->name=$request->name;
+   $task->save();
+  
+   return redirect('/');=>redirect to home page 
+ }); 
+
+ Or
+
+   Task::create(['name'=>$request->name]);
+   return redirect('/');
+
+   Model Task.php
+   protected $fillable=['name', ]; 
+
+   
+
